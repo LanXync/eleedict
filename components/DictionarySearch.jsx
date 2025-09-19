@@ -64,27 +64,25 @@ export default function DictionarySearch() {
       </Card>
 
       {results.length > 0 && (
-        <div className="space-y-3">
-          <p className="text-sm text-muted-foreground font-noto-serif-lao">
+        <div className="space-y-1.5">
+          <p className="text-sm text-muted-foreground font-noto-serif-lao mb-4">
             {searchTerm
               ? `ສະແດງ ${results?.length?.toLocaleString()} ຄຳສັບ`
               : `ຄຳສັບແບບສຸ່ມ ${results?.length?.toLocaleString()} ຄຳ`
             }
           </p>
           {results.map((entry) => (
-            <Card key={`${entry.id}-${entry.english}`}>
-              <CardContent className="pt-6">
-                <div className="grid gap-2">
-                  <div className="flex items-center gap-3">
-                    <img src="https://flagcdn.com/la.svg" alt="Lao" className="size-5 rounded-full object-cover" />
-                    <span className="text-2xl font-noto-serif-lao">{entry.laoWord}</span>
-                    <span className="text-lg text-muted-foreground ml-2">{entry.pronunciation}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <img src="https://flagcdn.com/gb.svg" alt="English" className="size-5 rounded-full object-cover" />
-                    <span className="font-medium">{entry.english}</span>
-                    <span className="text-sm text-muted-foreground">({entry.type})</span>
-                  </div>
+            <Card key={`${entry.id}-${entry.english}`} className="p-0 mb-4 rounded-lg">
+              <CardContent className="py-2 px-3">
+                <div className="flex items-center gap-2">
+                  <img src="https://flagcdn.com/la.svg" alt="Lao" className="size-3.5 rounded-full object-cover flex-shrink-0" />
+                  <span className="text-base font-noto-serif-lao">{entry.laoWord}</span>
+                  <span className="text-xs text-muted-foreground">{entry.pronunciation}</span>
+                </div>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <img src="https://flagcdn.com/gb.svg" alt="English" className="size-3.5 rounded-full object-cover flex-shrink-0" />
+                  <span className="text-sm">{entry.english}</span>
+                  <span className="text-xs text-muted-foreground">({entry.type})</span>
                 </div>
               </CardContent>
             </Card>

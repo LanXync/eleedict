@@ -1,5 +1,6 @@
 import { Noto_Serif_Lao, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const notoSerifLao = Noto_Serif_Lao({
   weight: ["400", "600", "700"],
@@ -25,11 +26,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${notoSerifLao.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider defaultTheme="dark" storageKey="eleedict-theme">
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

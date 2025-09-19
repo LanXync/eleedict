@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { loadDictionary, searchDictionary } from '@/lib/dictionary';
 
@@ -10,10 +11,28 @@ export default function DictionarySearch() {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [randomWords, setRandomWords] = useState([]);
+
+  const getRandomWords = (dict, count = 10) => {
+    if (!dict || dict.length === 0) return [];
+    const shuffled = [...dict].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  };
+
+  const refreshRandomWords = () => {
+    if (dictionary.length > 0) {
+      const newRandomWords = getRandomWords(dictionary, 10);
+      setRandomWords(newRandomWords);
+      if (!searchTerm) {
+        setResults(newRandomWords);
+      }
+    }
+  };
 
   useEffect(() => {
     loadDictionary().then(data => {
       setDictionary(data);
+      setRandomWords(getRandomWords(data, 10));
       setLoading(false);
     });
   }, []);
@@ -22,10 +41,10 @@ export default function DictionarySearch() {
     if (searchTerm) {
       const searchResults = searchDictionary(dictionary, searchTerm);
       setResults(searchResults.slice(0, 50));
-    } else {
-      setResults([]);
+    } else if (dictionary.length > 0) {
+      setResults(randomWords);
     }
-  }, [searchTerm, dictionary]);
+  }, [searchTerm, dictionary, randomWords]);
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
@@ -48,9 +67,21 @@ export default function DictionarySearch() {
             <p className="text-sm text-muted-foreground mt-2 font-noto-serif-lao">ກຳລັງໂຫຼດ...</p>
           )}
           {!loading && dictionary.length > 0 && (
-            <p className="text-sm text-muted-foreground mt-2 font-noto-serif-lao">
-              {dictionary?.length?.toLocaleString()} ຄຳສັບ
-            </p>
+            <div className="flex justify-between items-center mt-2">
+              <p className="text-sm text-muted-foreground font-noto-serif-lao">
+                {dictionary?.length?.toLocaleString()} ຄຳສັບ
+              </p>
+              {!searchTerm && (
+                <Button
+                  onClick={refreshRandomWords}
+                  variant="outline"
+                  size="sm"
+                  className="font-noto-serif-lao"
+                >
+                  ສຸ່ມໃໝ່
+                </Button>
+              )}
+            </div>
           )}
         </CardContent>
       </Card>
@@ -58,7 +89,10 @@ export default function DictionarySearch() {
       {results.length > 0 && (
         <div className="space-y-3">
           <p className="text-sm text-muted-foreground font-noto-serif-lao">
-            ສະແດງ {results?.length?.toLocaleString()} ຄຳສັບ
+            {searchTerm
+              ? `ສະແດງ ${results?.length?.toLocaleString()} ຄຳສັບ`
+              : `ຄຳສັບແບບສຸ່ມ ${results?.length?.toLocaleString()} ຄຳ`
+            }
           </p>
           {results.map((entry) => (
             <Card key={`${entry.id}-${entry.english}`}>

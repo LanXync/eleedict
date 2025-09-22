@@ -22,6 +22,13 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Eleedict - Lao Dictionary",
   description: "A modern Lao dictionary application",
+  icons: {
+    icon: [
+      { url: "/assets/eleedict.png", type: "image/png" },
+    ],
+    shortcut: "/assets/eleedict.png",
+    apple: "/assets/eleedict.png",
+  },
 };
 
 export default function RootLayout({ children }) {

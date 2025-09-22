@@ -93,8 +93,8 @@ export default function DictionarySearch() {
       {searchTerm && results.length === 0 && !loading && (
         <Card>
           <CardContent className="pt-6">
-            <p className="text-center text-muted-foreground">
-              No results found for &quot;{searchTerm}&quot;
+            <p className="text-center text-muted-foreground font-noto-serif-lao">
+              ບໍ່ພົບຜົນການຄົ້ນຫາສຳລັບ &quot;{searchTerm}&quot;
             </p>
           </CardContent>
         </Card>

@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { loadDictionary, searchDictionary } from '@/lib/dictionary';
 
 export default function DictionarySearch() {
   const [dictionary, setDictionary] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [randomWords, setRandomWords] = useState([]);
@@ -27,13 +29,23 @@ export default function DictionarySearch() {
   }, []);
 
   useEffect(() => {
-    if (searchTerm) {
-      const searchResults = searchDictionary(dictionary, searchTerm);
+    if (searchQuery) {
+      const searchResults = searchDictionary(dictionary, searchQuery);
       setResults(searchResults.slice(0, 50));
     } else if (dictionary.length > 0) {
       setResults(randomWords);
     }
-  }, [searchTerm, dictionary, randomWords]);
+  }, [searchQuery, dictionary, randomWords]);
+
+  const handleSearch = () => {
+    setSearchQuery(searchTerm);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
@@ -44,14 +56,24 @@ export default function DictionarySearch() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Input
-            type="text"
-            placeholder="ຄົ້ນຫາລາວ, ອັງກິດ ຫຼື ຄຳອ່ານ..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="text-lg font-noto-serif-lao"
-            disabled={loading}
-          />
+          <div className="flex gap-2">
+            <Input
+              type="text"
+              placeholder="ຄົ້ນຫາລາວ, ອັງກິດ ຫຼື ຄຳອ່ານ..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={handleKeyPress}
+              className="text-lg font-noto-serif-lao flex-1"
+              disabled={loading}
+            />
+            <Button
+              onClick={handleSearch}
+              disabled={loading || !searchTerm}
+              className="font-noto-serif-lao"
+            >
+              ຄົ້ນຫາ
+            </Button>
+          </div>
           {loading && (
             <p className="text-sm text-muted-foreground mt-2 font-noto-serif-lao">ກຳລັງໂຫຼດ...</p>
           )}
@@ -66,7 +88,7 @@ export default function DictionarySearch() {
       {results.length > 0 && (
         <div className="space-y-1.5">
           <p className="text-sm text-muted-foreground font-noto-serif-lao mb-4">
-            {searchTerm
+            {searchQuery
               ? `ສະແດງ ${results?.length?.toLocaleString()} ຄຳສັບ`
               : `ຄຳສັບແບບສຸ່ມ ${results?.length?.toLocaleString()} ຄຳ`
             }
@@ -90,11 +112,11 @@ export default function DictionarySearch() {
         </div>
       )}
 
-      {searchTerm && results.length === 0 && !loading && (
+      {searchQuery && results.length === 0 && !loading && (
         <Card>
           <CardContent className="pt-6">
             <p className="text-center text-muted-foreground font-noto-serif-lao">
-              ບໍ່ພົບຜົນການຄົ້ນຫາສຳລັບ &quot;{searchTerm}&quot;
+              ບໍ່ພົບຜົນການຄົ້ນຫາສຳລັບ &quot;{searchQuery}&quot;
             </p>
           </CardContent>
         </Card>
